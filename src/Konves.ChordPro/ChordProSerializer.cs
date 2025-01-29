@@ -47,12 +47,12 @@ namespace Konves.ChordPro
 
 			foreach (Block block in line.Blocks)
 			{
-				if (addSpace)
-					writer.Write(' ');
-
 				if (block is Word)
-				{
-					Word word = block as Word;
+                {
+                    if (addSpace)
+                        writer.Write(' ');
+
+                    Word word = block as Word;
 
 					foreach (Syllable syllable in word.Syllables)
 					{
@@ -60,15 +60,26 @@ namespace Konves.ChordPro
 							writer.Write($"[{syllable.Chord.Text}]");
 
 						writer.Write(syllable.Text);
-					}
-				}
-				else if (block is Chord)
-				{
-					Chord chord = block as Chord;
-					writer.Write($"[{chord.Text}]");
-				}
+                    }
 
-				addSpace = true;
+                    addSpace = true;
+                }
+				else if (block is Chord)
+                {
+                    if (addSpace)
+                        writer.Write(' ');
+
+                    Chord chord = block as Chord;
+					writer.Write($"[{chord.Text}]");
+
+                    addSpace = true;
+                }
+				else if (block is Whitespace)
+				{
+					Whitespace whitespace = block as Whitespace;
+                    writer.Write(new string(' ', whitespace.Length));
+					addSpace = false;
+                }
 			}
 
 			writer.WriteLine();

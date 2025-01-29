@@ -86,28 +86,19 @@ namespace Konves.ChordPro
 				throw new ArgumentNullException();
 
 			int start = 0;
+			int chordStart = 0;
 			bool isInBlock = false;
 			bool isInChord = false;
 			for (int i = 0; i < line.Length; i++)
 			{
-				if (isInBlock && !isInChord)
-				{
-					if (char.IsWhiteSpace(line[i]))
-					{
-						yield return line.Substring(start, i - start);
-						isInBlock = false;
-						continue;
-					}
-					else if (i == line.Length - 1)
-					{
-						yield return line.Substring(start, i - start + 1);
-						isInBlock = false;
-						continue;
-					}
-				}
-
 				if (!isInBlock && !char.IsWhiteSpace(line[i]))
 				{
+					var length = i - start;
+					if (start != 0)
+						length--;
+					if (length > 0)
+						yield return new string(' ', length);
+
 					isInBlock = true;
 					start = i;
 				}
@@ -115,14 +106,32 @@ namespace Konves.ChordPro
 				if (!isInChord && line[i] == '[')
 				{
 					isInChord = true;
+					chordStart = i;
 				}
 
 				if (isInChord && line[i] == ']')
 				{
 					isInChord = false;
 				}
-			}
-		}
+
+                if (isInBlock && !isInChord)
+                {
+                    if (char.IsWhiteSpace(line[i]))
+                    {
+                        yield return line.Substring(start, i - start);
+                        isInBlock = false;
+                        start = i;
+                        continue;
+                    }
+                    else if (i == line.Length - 1)
+                    {
+                        yield return line.Substring(start, i - start + 1);
+                        isInBlock = false;
+                        continue;
+                    }
+                }
+            }
+        }
 
 		internal static IEnumerable<string> SplitIntoSyllables(string block)
 		{
@@ -154,6 +163,9 @@ namespace Konves.ChordPro
 
 		internal Block ParseBlock(string block)
 		{
+			if (string.IsNullOrWhiteSpace(block))
+				return new Whitespace(block.Length);
+
 			List<string> syllables = SplitIntoSyllables(block).ToList();
 
 			Chord chord;
