@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <RootNamespace>Konves.ChordPro</RootNamespace>
-    <AssemblyName>Konves.ChordPro</AssemblyName>
+    <RootNamespace>Konves.ChordPro.Skinnix</RootNamespace>
+    <AssemblyName>Konves.ChordPro.Skinnix</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup>
-    <OutputPath>..\..\..\..\Build\$(Configuration)\</OutputPath>
+    <OutputPath>..\..\..\..\Build\$(Configuration)\$(AssemblyName)</OutputPath>
   </PropertyGroup>
 
 </Project>
